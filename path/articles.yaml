@@ -1,0 +1,144 @@
+list-articles:
+  get:
+    parameters:
+      - $ref: ../openapi.yaml#/components/parameters/Cursor
+      - $ref: ../openapi.yaml#/components/parameters/Include
+      - $ref: ../openapi.yaml#/components/parameters/Limit
+      - $ref: ../openapi.yaml#/components/parameters/From
+      - $ref: ../openapi.yaml#/components/parameters/To
+    operationId: list-articles
+    description:  List all the articles in the system.
+    tags:
+      - articles
+    responses:
+      "200":
+        description: OK
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - meta
+                - data
+                - links
+              properties:
+                meta:
+                  $ref: ../openapi.yaml#/components/schemas/ListResponseMeta
+                data:
+                  type: array
+                  items:
+                    $ref: ../openapi.yaml#/components/schemas/Article
+                included:
+                    $ref: ../openapi.yaml#/components/schemas/ArticleIncluded
+                links:
+                  $ref: ../openapi.yaml#/components/schemas/ResponseLinks
+      default:
+        $ref: ../openapi.yaml#/components/responses/Error
+
+articles:
+  parameters:
+    - schema:
+        type: string
+      name: id
+      in: path
+      required: true
+    - $ref: ../openapi.yaml#/components/parameters/Include
+
+  get:
+    operationId: get-article
+    description: Retrieve an article by id
+    tags:
+      - articles
+    responses:
+      "200":
+        description: OK
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - data
+              properties:
+                data:
+                  $ref: ../openapi.yaml#/components/schemas/Article
+                included:
+                  $ref: ../openapi.yaml#/components/schemas/ArticleIncluded
+      default:
+        $ref: ../openapi.yaml#/components/responses/Error
+
+list-article-versions:
+  parameters:
+    - $ref: ../openapi.yaml#/components/parameters/Cursor
+    - $ref: ../openapi.yaml#/components/parameters/Limit
+    - schema:
+        type: string
+      name: id
+      in: path
+      required: true
+      description: Unique identifier of the article.
+  get:
+    operationId: list-article-versions
+    description: List all the versions of the article.
+    tags:
+      - articles
+    responses:
+      "200":
+        description: OK
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - meta
+                - data
+                - links
+              properties:
+                meta:
+                  $ref: ../openapi.yaml#/components/schemas/ListResponseMeta
+                data:
+                  type: array
+                  items:
+                    $ref: ../openapi.yaml#/components/schemas/ArticleVersions
+                links:
+                  $ref: ../openapi.yaml#/components/schemas/ResponseLinks
+      default:
+        $ref: ../openapi.yaml#/components/responses/Error
+
+articles-versions:
+  parameters:
+    - schema:
+        type: string
+      name: id
+      in: path
+      required: true
+      description: Unique identifier of the article.
+    - schema:
+        type: string
+      name: version
+      in: path
+      required: true
+      description: Unique identifier of the version for the given article.
+  get:
+    operationId: get-article-version
+    description: Retrieve an article version by id
+    tags:
+      - articles
+    responses:
+      "200":
+        description: OK
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - data
+              properties:
+                data:
+                  $ref: ../openapi.yaml#/components/schemas/ArticleVersion
+      default:
+        $ref: ../openapi.yaml#/components/responses/Error
+

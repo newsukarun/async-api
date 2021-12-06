@@ -1,16 +1,175 @@
 asyncapi: '2.2.0'
+
 info:
-  title: Account Service
-  version: 1.0.0
-  description: This service is in charge of processing user signups
+  title: News UK Content Schema - Async Api
+  version: 0.1.0
+  description: |
+    # Introduction
+    This API specification has been developed to strictly and accurately describe
+    how content will be accessed and interpreted for News UK.  This schema conforms
+    with [JSON:API](https://jsonapi.org/) and follows many of the recommendations
+    as well.
+
+    This API is expected to be "versionless" and evolve, i.e. fields may be added
+    at any time.  Some fields may be deprecated in the future, at which time they
+    will be marked as such in this schema and client will be contacted before their
+    eventual removal.  It is therefore important to utilise the API keys properly so
+    that your client can be identified properly.
+
+    # Pagination
+    Pagination is provided on collection (list) endpoints to ensure that the
+    complexity is limited for both the client and server.  This means by default
+    the server will provide results in sets (pages) of 10.
+    You can specify how many items to receive (usually up to a maximum of 20), read
+    the individual endpoints' definitions to understand how pagination works for
+    each one.
+
+    Information about pagination is provided within the `links` node within the data
+    response.  This allows you to move forward and backward through the given result
+    set.
+
+    For example, if we make a curl request to list posts:
+
+    ```
+    curl "https://api.example.com/posts"
+    ```
+
+    We will see a response which includes the following:
+
+    ```
+    "links": {
+      "first": "https://api.example.com/posts?cursor=abc",
+      "last": "https://api.example.com/posts?cursor=xyz",
+      "prev": "https://api.example.com/posts?cursor=def",
+      "next": "https://api.example.com/posts?cursor=jlk"
+    }
+    ```
+
+    Each of those links allows you to paginate in the direction you would like to go.
+    The link provided in `next` will get the next page of results, `prev` will get the
+    previous page of results.
+
+    **Always rely on these link relations provided to you. Don't try to guess or
+    construct your own URL.**
+
+
+    ## Changing the number of items received
+    You can alter the page size returned by the server by using the `limit` query
+    parameter.
+
+    For example, we could make a curl request to list 15 posts:
+
+    ```
+    curl "https://api.example.com/posts?limit=15"
+    ```
+
+    **You should not change the size of the page during pagination as this may have
+    unexpected results - always use the unmodified pagination links provided.**
+
+
+    ## Determining number of records in the collection
+    On some endpoints metadata will be provided which indicates the total size of
+    the collection you are working with.
+
+    For example, if we make a curl request to list posts:
+
+    ```
+    curl "https://api.example.com/posts"
+    ```
+
+    Part of the response will include:
+
+    ```
+    "meta": {
+      "countRemainingPrev": 0,
+      "countRemainingNext": 28,
+      "countTotal": 44
+    }
+    ```
+
+    This tells us that there are 0 more records if we traverse in the `prev`
+    direction, 28 more records if we traverse in the `next` direction and a
+    total of 44 records in the whole collection, including the page that has
+    been returned.
+
+
+    ## Paginating with live updating data
+    As a client you may wish to know whether more items have been created within
+    a collection since you last called.
+
+    The recommended approach is to continue to call the link in the direction of
+    travel and see if any more records are returned.  In the case where there are no
+    new records, you will receive 0 items in the `data` node and will be given
+    new pagination links so you can continue to poll for new data in that
+    direction.
+
+
+    # Authentication
+    In order to use the API, clients must be authenticated via an API Key.  Each
+    client should use its own unique API key.  This is so that individual clients
+    can be identified and throttled or have access revoked should they misbehave.
+
+    <SecurityDefinitions />
+
+
+    # Content Blocks
+    The content within this schema is made up of a list of `Block`s.  The type of
+    block is discriminated by its `name`.
+
+    <SchemaDefinition schemaRef="#/components/schemas/Block" />
+
+    **Clients must ensure they can gracefully handle (ignore) `Block`s which they do
+    not understand as this schema will evolve over time and new `Block`s will be added
+    regularly.  This is not considered a breaking change for this API.**
+
+  contact:
+    name: News UK Content Platforms Team
+    url: https://www.news.co.uk
+    email: contentplatforms@news.co.uk
+  license:
+    name: BSD-3-Clause
+    url: https://github.com/newscorp-ghfb/nuk-content-schema/blob/master/LICENSE
+
+servers:
+  Development:
+    url: https://content.dev.newsapis.co.uk/api/{basePath}
+    description: Times Radio Dev/UAT
+    protocol: http
+    variables:
+      basePath:
+        enum:
+          - v1/times
+          - v1/times-radio
+        default: v1/times-radio
+  Staging:
+    url: https://content.staging.newsapis.co.uk/api/{basePath}
+    description: Times Radio Staging
+    protocol: http
+    variables:
+      basePath:
+        enum:
+          - v1/times
+          - v1/times-radio
+        default: v1/times-radio
+  Production:
+    url: https://content.newsapis.co.uk/api/{basePath}
+    description: Times Radio Production
+    protocol: http
+    variables:
+      basePath:
+        enum:
+          - v1/times
+          - v1/times-radio
+        default: v1/times-radio
+
 channels:
-  user/signedup:
+  /articles:
     subscribe:
       message:
-        $ref: '#/components/messages/UserSignedUp'
+        $ref: '#/components/messages/ArticlesSubscribe'
 components:
   messages:
-    UserSignedUp:
+    ArticlesSubscribe:
       payload:
         type: object
         properties:

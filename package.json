@@ -26,7 +26,7 @@
   },
   "scripts": {
     "build": "ag AsuncApi.yaml @asyncapi/html-template -o output --force-write",
-    "watch": "ag AsuncApi.yaml @asyncapi/html-template -o output --watch-template",
+    "watch": "ag AsuncApi.yaml node_modules/@asyncapi/html-template -o output --watch-template",
     "deploy": "./bin/deploy.sh"
   },
   "dependencies": {
