@@ -1,0 +1,39 @@
+{
+  "name": "@asyncapi/server-api",
+  "version": "0.1.0",
+  "description": "Server API providing official AsyncAPI tools",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/asyncapi/server-api",
+  "bugs": {
+    "url": "https://github.com/asyncapi/server-api/issues"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/asyncapi/server-api.git"
+  },
+  "keywords": [
+    "server",
+    "api",
+    "asyncapi",
+    "generator",
+    "tooling"
+  ],
+  "author": {
+    "name": "The AsyncAPI maintainers"
+  },
+  "scripts": {
+    "build": "ag AsuncApi.yaml @asyncapi/html-template -o output --force-write",
+    "watch": "ag AsuncApi.yaml @asyncapi/html-template -o output --watch-template",
+    "deploy": "./bin/deploy.sh"
+  },
+  "dependencies": {
+    "@asyncapi/generator": "^1.8.14",
+    "@asyncapi/html-template": "^0.23.10",
+    "@asyncapi/markdown-template": "^0.19.8",
+    "@asyncapi/parser": "^1.13.0",
+    "@koumoul/gh-pages-multi": "^0.7.1"
+  }
+}
