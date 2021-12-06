@@ -34,8 +34,4 @@ This package is still under development and has not published and reached versio
 
 1. Setup project by installing dependencies `npm install`
 2. Write code and tests.
-3. Make sure all tests pass `npm test`
-
-## Contributing
-
-Read [CONTRIBUTING](https://github.com/asyncapi/.github/blob/master/CONTRIBUTING.md) guide.
+3. Build : `npm run build`
