@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  lint:
+  build:
     docker:
       - image: circleci/node:12
     steps:
@@ -24,16 +24,16 @@ workflows:
   build-and-deploy:
     jobs:
       # Lint runs on every push (including tags)
-      - lint:
+      - build:
           filters:
             tags:
               only: /^v.*/
       # Deploy docs from master or a tag
       - deploy:
           requires:
-            - lint
+            - build
           filters:
             branches:
-              only: master
+              only: main
             tags:
               only: /^v.*/
