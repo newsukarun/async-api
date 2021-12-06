@@ -7,7 +7,6 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: npm run lint
 
   deploy:
     docker:
@@ -15,7 +14,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - c8:b5:62:a8:54:dc:2f:39:30:0e:68:49:40:d5:d3:8b
+            - 3c:57:3c:f2:f2:f3:b9:3b:9d:eb:80:0c:3e:2b:20:1d
       - checkout
       - run: npm install
       - run: npm run deploy
